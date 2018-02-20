@@ -1,0 +1,20 @@
+{
+	"name": "Analytics",
+
+	"namespace": "Vanderbilt\\AnalyticsExternalModule",
+
+	"description": "Tracks common user actions and provides reports to analyze them.",
+
+	"authors": [
+		{
+			"name": "Mark McEver",
+			"email": "datacore@vanderbilt.edu",
+			"institution": "Vanderbilt University Medical Center"
+		}
+	],
+
+	"permissions": [
+		"redcap_survey_page",
+		"redcap_data_entry_form"
+	]
+}
