@@ -14,7 +14,6 @@
 	],
 
 	"permissions": [
-		"redcap_survey_page",
-		"redcap_data_entry_form"
+		"redcap_survey_page"
 	]
 }
