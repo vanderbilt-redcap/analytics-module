@@ -1,4 +1,6 @@
 var AnalyticsExternalModule = {
+	youTubeSelector: 'iframe[src*="youtube.com"]',
+	vimeoSelector: 'iframe[src*="vimeo.com"]',
 	elementsToInitializeLater: [],
 	elementsInitialized: [],
 	handleVideoElement: function(element){
@@ -9,6 +11,21 @@ var AnalyticsExternalModule = {
 
 		element = $(element)
 
+		if(element.is(AnalyticsExternalModule.youTubeSelector)){
+			element = AnalyticsExternalModule.handleYouTubeElement(element)
+		}
+		else if(element.is(AnalyticsExternalModule.vimeoSelector)){
+			element = AnalyticsExternalModule.handleVimeoElement(element)
+		}
+		else{
+			simpleDialog("The Analytics module couldn't track one of the videos on this page because it is not hosted on YouTube or Vimeo.")
+		}
+
+		if(element) {
+			AnalyticsExternalModule.elementsInitialized.push(element)
+		}
+	},
+	handleYouTubeElement: function(element){
 		if(typeof YT == 'undefined' || !YT.loaded){
 			// The YouTube framework hasn't loaded yet. Delay initialization.
 			AnalyticsExternalModule.elementsToInitializeLater.push(element[0])
@@ -16,7 +33,7 @@ var AnalyticsExternalModule = {
 			// Hide the element to prevent the user from playing it until we are able to track it.
 			element.css('visibility', 'hidden')
 
-			return
+			return null
 		}
 
 		var height = element.attr('height')
@@ -33,26 +50,47 @@ var AnalyticsExternalModule = {
 			events: {
 				'onStateChange': function(e){
 					var code = e.data
-					
+
+					var event = null
 					if(code == YT.PlayerState.PLAYING){
-						console.log('video playing')
+						event = 'play'
 					}
 					else if(code == YT.PlayerState.PAUSED){
-						console.log('video paused')
+						event = 'pause'
 					}
 					else if(code == YT.PlayerState.ENDED){
-						console.log('video ended')
+						event = 'ended'
+					}
+
+					if(event){
+						AnalyticsExternalModule.logVideoEvent(element[0], event)
 					}
 				}
 			}
 		})
 
-		AnalyticsExternalModule.elementsInitialized.push(player.a)
+		return player.a
+	},
+	handleVimeoElement: function(element){
+		element = element[0]
+
+		var player = new Vimeo.Player(element)
+
+		;['play', 'pause', 'ended'].forEach(function(event){
+			player.on(event, function() {
+				AnalyticsExternalModule.logVideoEvent(element, event)
+			})
+		})
+
+		return element
+	},
+	logVideoEvent: function(element, event){
+		console.log(event, element.src)
 	}
 }
 
 $(function(){
-	var selector = 'iframe[src*="youtube.com"]'
+	var selector = AnalyticsExternalModule.youTubeSelector + ', ' + AnalyticsExternalModule.vimeoSelector
 
 	// Handle videos configured to display inline
 	$(selector).each(function(index, element){
