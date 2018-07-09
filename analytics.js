@@ -85,7 +85,17 @@ var AnalyticsExternalModule = {
 		return element
 	},
 	logVideoEvent: function(element, event){
-		console.log(event, element.src)
+		// Normalize to past tense
+		if(event === 'play'){
+			event += 'ed'
+		}
+		else if (event === 'pause') {
+			event += 'd'
+		}
+
+		console.log('video ' + event, {
+			url: element.src
+		})
 	}
 }
 
