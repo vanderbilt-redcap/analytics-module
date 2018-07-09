@@ -95,7 +95,7 @@ var AnalyticsExternalModule = {
 			event += 'd'
 		}
 
-		console.log('video ' + event, {
+		ExternalModules.Vanderbilt.AnalyticsExternalModule.log('video ' + event, {
 			url: element.src
 		})
 	}
