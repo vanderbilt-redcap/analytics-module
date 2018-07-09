@@ -15,7 +15,7 @@ var AnalyticsExternalModule = {
 
 		var height = element.attr('height')
 		var width = element.attr('width')
-		var src = element.attr('src').split('/').pop()
+		var src = element.attr('src').split('/').pop().split('?')[0]
 
 		var newElement = $('<div></div>')
 		element.replaceWith(newElement)
