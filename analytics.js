@@ -27,13 +27,15 @@ var AnalyticsExternalModule = {
 			events: {
 				'onStateChange': function(e){
 					var code = e.data
-
-					// TODO: need to handle more states to correctly log (buffered, ended, etc.)
+					
 					if(code == YT.PlayerState.PLAYING){
 						console.log('video playing')
 					}
 					else if(code == YT.PlayerState.PAUSED){
 						console.log('video paused')
+					}
+					else if(code == YT.PlayerState.ENDED){
+						console.log('video ended')
 					}
 				}
 			}
