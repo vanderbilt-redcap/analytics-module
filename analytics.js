@@ -1,6 +1,12 @@
 var AnalyticsExternalModule = {
 	elementsToInitializeLater: [],
+	elementsInitialized: [],
 	handleVideoElement: function(element){
+		if(AnalyticsExternalModule.elementsInitialized.indexOf(element) !== -1){
+			// We've already initialized this element.
+			return
+		}
+
 		element = $(element)
 
 		if(typeof YT == 'undefined' || !YT.loaded){
@@ -20,7 +26,7 @@ var AnalyticsExternalModule = {
 		var newElement = $('<div></div>')
 		element.replaceWith(newElement)
 
-		new YT.Player(newElement[0], {
+		var player = new YT.Player(newElement[0], {
 			height: height,
 			width: width,
 			videoId: src,
@@ -40,6 +46,8 @@ var AnalyticsExternalModule = {
 				}
 			}
 		})
+
+		AnalyticsExternalModule.elementsInitialized.push(player.a)
 	}
 }
 
