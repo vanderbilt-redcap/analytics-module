@@ -4,31 +4,31 @@ var AnalyticsExternalModule = {
 	elementsToInitializeLater: [],
 	elementsInitialized: [],
 	handleVideoElement: function(element){
-		if(AnalyticsExternalModule.elementsInitialized.indexOf(element) !== -1){
+		if(this.elementsInitialized.indexOf(element) !== -1){
 			// We've already initialized this element.
 			return
 		}
 
 		element = $(element)
 
-		if(element.is(AnalyticsExternalModule.youTubeSelector)){
-			element = AnalyticsExternalModule.handleYouTubeElement(element)
+		if(element.is(this.youTubeSelector)){
+			element = this.handleYouTubeElement(element)
 		}
-		else if(element.is(AnalyticsExternalModule.vimeoSelector)){
-			element = AnalyticsExternalModule.handleVimeoElement(element)
+		else if(element.is(this.vimeoSelector)){
+			element = this.handleVimeoElement(element)
 		}
 		else{
 			simpleDialog("The Analytics module couldn't track one of the videos on this page because it is not hosted on YouTube or Vimeo.")
 		}
 
 		if(element) {
-			AnalyticsExternalModule.elementsInitialized.push(element)
+			this.elementsInitialized.push(element)
 		}
 	},
 	handleYouTubeElement: function(element){
 		if(typeof YT == 'undefined' || !YT.loaded){
 			// The YouTube framework hasn't loaded yet. Delay initialization.
-			AnalyticsExternalModule.elementsToInitializeLater.push(element[0])
+			this.elementsToInitializeLater.push(element[0])
 
 			// Hide the element to prevent the user from playing it until we are able to track it.
 			element.css('visibility', 'hidden')
@@ -43,6 +43,7 @@ var AnalyticsExternalModule = {
 		var newElement = $('<div></div>')
 		element.replaceWith(newElement)
 
+		var module = this
 		var player = new YT.Player(newElement[0], {
 			height: height,
 			width: width,
@@ -63,7 +64,7 @@ var AnalyticsExternalModule = {
 					}
 
 					if(event){
-						AnalyticsExternalModule.logVideoEvent(element[0], event)
+						module.logVideoEvent(element[0], event)
 					}
 				}
 			}
@@ -74,11 +75,12 @@ var AnalyticsExternalModule = {
 	handleVimeoElement: function(element){
 		element = element[0]
 
+		var module = this
 		var player = new Vimeo.Player(element)
 
 		;['play', 'pause', 'ended'].forEach(function(event){
 			player.on(event, function() {
-				AnalyticsExternalModule.logVideoEvent(element, event)
+				module.logVideoEvent(element, event)
 			})
 		})
 
