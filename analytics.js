@@ -52,7 +52,7 @@ var AnalyticsExternalModule = {
 }
 
 $(function(){
-	var selector = 'embed[src*="youtube.com"]'
+	var selector = 'iframe[src*="youtube.com"]'
 
 	// Handle videos configured to display inline
 	$(selector).each(function(index, element){
