@@ -14,4 +14,8 @@ class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
 		<script src="<?=$this->getUrl('analytics.js')?>"></script>
 		<?php
 	}
+
+	function redcap_survey_complete(){
+		$this->log('survey complete');
+	}
 }
