@@ -113,6 +113,7 @@ var AnalyticsExternalModule = {
 		var width = element.attr('width')
 		var src = element.attr('src').split('/').pop().split('?')[0]
 
+		var fieldName = AnalyticsExternalModule.getFieldNameForElement(element)
 		var newElement = $('<div></div>')
 		element.replaceWith(newElement)
 
@@ -137,7 +138,7 @@ var AnalyticsExternalModule = {
 					}
 
 					if(event){
-						module.logVideoEvent(element[0], event)
+						module.logVideoEvent(fieldName, event)
 					}
 				}
 			}
@@ -150,16 +151,30 @@ var AnalyticsExternalModule = {
 
 		var module = this
 		var player = new Vimeo.Player(element)
+		var fieldName = AnalyticsExternalModule.getFieldNameForElement(element)
 
 		;['play', 'pause', 'ended'].forEach(function(event){
 			player.on(event, function() {
-				module.logVideoEvent(element, event)
+				module.logVideoEvent(fieldName, event)
 			})
 		})
 
 		return element
 	},
-	logVideoEvent: function(element, event){
+	getFieldNameForElement: function(element){
+		var rowId = $(element).closest('tr').attr('id')
+		var parts = rowId.split('-')
+
+		var name = parts[0]
+
+		if(parts[1] !== 'tr'){
+			name = 'An error occurred while detecting the field name for row id: ' + rowId
+			alert(name)
+		}
+
+		return name
+	},
+	logVideoEvent: function(fieldName, event){
 		// Normalize to past tense
 		if(event === 'play'){
 			event += 'ed'
@@ -169,7 +184,7 @@ var AnalyticsExternalModule = {
 		}
 
 		ExternalModules.Vanderbilt.AnalyticsExternalModule.log('video ' + event, {
-			url: element.src
+			name: fieldName
 		})
 	}
 }
