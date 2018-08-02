@@ -3,6 +3,79 @@ var AnalyticsExternalModule = {
 	vimeoSelector: 'iframe[src*="vimeo.com"]',
 	elementsToInitializeLater: [],
 	elementsInitialized: [],
+	init: function(){
+		AnalyticsExternalModule.trackVideos()
+		AnalyticsExternalModule.trackFieldChanges()
+	},
+	trackVideos: function(){
+		var selector = AnalyticsExternalModule.youTubeSelector + ', ' + AnalyticsExternalModule.vimeoSelector
+
+		// Handle videos configured to display inline
+		$(selector).each(function(index, element){
+			AnalyticsExternalModule.handleVideoElement(element)
+		})
+
+		// Handle videos configured to display inside a popup
+		new MutationObserver(function(mutations) {
+			mutations.forEach(function(mutation) {
+				var nodes = mutation.addedNodes
+				if (!nodes) {
+					return
+				}
+
+				for(var i=0; i<nodes.length; i++){
+					var element = nodes[i]
+					if(!element){
+						return
+					}
+
+					if($(element).is(selector)){
+						AnalyticsExternalModule.handleVideoElement(element)
+					}
+				}
+			})
+		}).observe(document.body, {childList: true, subtree: true})
+	},
+	trackFieldChanges: function(){
+		var log = function(name){
+			ExternalModules.Vanderbilt.AnalyticsExternalModule.log('field changed', {
+				name: name
+			})
+		}
+
+		var form = $('#form')
+
+		form.find('input, textarea, select').change(function(){
+			var name = this.name
+
+			if(this.type == 'radio'){
+				name = name.replace('___radio', '')
+			}
+			else if(this.type == 'checkbox'){
+				name = name.replace('__chkn__', '')
+			}
+
+			log(name)
+		})
+
+		var handleSlide = function(element){
+			element = $(element)
+			if(element.hasClass('ui-slider-handle')){
+				element = element.parent()
+			}
+
+			var name = element[0].id.replace('slider-', '')
+			log(name)
+		}
+
+		form.find('.ui-slider-horizontal, .ui-slider-handle').on('click', function () {
+			handleSlide(this)
+		})
+
+		form.find('.ui-slider-horizontal').on('touchend', function () {
+			handleSlide(this)
+		})
+	},
 	handleVideoElement: function(element){
 		if(this.elementsInitialized.indexOf(element) !== -1){
 			// We've already initialized this element.
@@ -102,33 +175,7 @@ var AnalyticsExternalModule = {
 }
 
 $(function(){
-	var selector = AnalyticsExternalModule.youTubeSelector + ', ' + AnalyticsExternalModule.vimeoSelector
-
-	// Handle videos configured to display inline
-	$(selector).each(function(index, element){
-		AnalyticsExternalModule.handleVideoElement(element)
-	})
-
-	// Handle videos configured to display inside a popup
-	new MutationObserver(function(mutations) {
-		mutations.forEach(function(mutation) {
-			var nodes = mutation.addedNodes
-			if (!nodes) {
-				return
-			}
-
-			for(var i=0; i<nodes.length; i++){
-				var element = nodes[i]
-				if(!element){
-					return
-				}
-
-				if($(element).is(selector)){
-					AnalyticsExternalModule.handleVideoElement(element)
-				}
-			}
-		})
-	}).observe(document.body, {childList: true, subtree: true})
+	AnalyticsExternalModule.init();
 })
 
 // This is called by the YouTube Iframe framework
