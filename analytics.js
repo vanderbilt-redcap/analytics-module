@@ -138,7 +138,7 @@ var AnalyticsExternalModule = {
 					}
 
 					if(event){
-						module.logVideoEvent(fieldName, event)
+						module.logVideoEvent(fieldName, event, e.target.getCurrentTime())
 					}
 				}
 			}
@@ -153,9 +153,11 @@ var AnalyticsExternalModule = {
 		var player = new Vimeo.Player(element)
 		var fieldName = AnalyticsExternalModule.getFieldNameForElement(element)
 
-		;['play', 'pause', 'ended'].forEach(function(event){
+		;['play', 'pause', 'ended', 'seeked'].forEach(function(event){
 			player.on(event, function() {
-				module.logVideoEvent(fieldName, event)
+				player.getCurrentTime().then(function(seconds) {
+					module.logVideoEvent(fieldName, event, seconds)
+				})
 			})
 		})
 
@@ -174,7 +176,7 @@ var AnalyticsExternalModule = {
 
 		return name
 	},
-	logVideoEvent: function(fieldName, event){
+	logVideoEvent: function(fieldName, event, seconds){
 		// Normalize to past tense
 		if(event === 'play'){
 			event += 'ed'
@@ -184,7 +186,8 @@ var AnalyticsExternalModule = {
 		}
 
 		ExternalModules.Vanderbilt.AnalyticsExternalModule.log('video ' + event, {
-			name: fieldName
+			name: fieldName,
+			seconds: seconds
 		})
 	}
 }
