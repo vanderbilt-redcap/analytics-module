@@ -189,6 +189,8 @@ var AnalyticsExternalModule = {
 		return name
 	},
 	logVideoEvent: function(fieldName, event, seconds){
+		seconds = seconds.toFixed(2)
+
 		// Normalize to past tense
 		if(event === 'play'){
 			event += 'ed'
