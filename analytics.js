@@ -164,14 +164,26 @@ var AnalyticsExternalModule = {
 		return element
 	},
 	getFieldNameForElement: function(element){
-		var rowId = $(element).closest('tr').attr('id')
-		var parts = rowId.split('-')
+		element = $(element)
 
-		var name = parts[0]
+		var id = element.attr('id')
+		var popupIdPrefix = 'rc-embed-video'
 
-		if(parts[1] !== 'tr'){
-			name = 'An error occurred while detecting the field name for row id: ' + rowId
-			alert(name)
+		var name = null
+		if(id && id.indexOf(popupIdPrefix) === 0){
+			name = id.substr(popupIdPrefix.length+1)
+		}
+		else{
+			var rowId = element.closest('tr').attr('id')
+			var parts = rowId.split('-')
+
+			if(parts[1] === 'tr') {
+				name = parts[0]
+			}
+		}
+		
+		if(!name){
+			alert('An error occurred while detecting a field name for logging!  Please report this error.')
 		}
 
 		return name
