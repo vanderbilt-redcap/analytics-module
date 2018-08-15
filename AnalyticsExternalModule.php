@@ -2,6 +2,17 @@
 namespace Vanderbilt\AnalyticsExternalModule;
 
 class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
+	const COLUMNS = [
+		'log_id' => "Log ID",
+		'timestamp' => 'Timestamp',
+		'username' => 'Username',
+		'ip' => 'IP Address',
+		'external_module_id' => 'External Module',
+		'project_id' => 'Project',
+		'record' => 'Record',
+		'message' => 'Message'
+	];
+
 	function redcap_survey_page(){
 		$this->log('survey page loaded', [
 			'page' => $_GET['__page__']

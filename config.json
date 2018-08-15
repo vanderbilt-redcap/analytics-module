@@ -16,5 +16,15 @@
 	"permissions": [
 		"redcap_survey_page",
 		"redcap_survey_complete"
-	]
+	],
+
+	"links": {
+		"project": [
+			{
+				"name": "Analytics",
+				"icon": "report",
+				"url": "analytics.php"
+			}
+		]
+	}
 }
