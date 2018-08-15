@@ -39,7 +39,7 @@ var AnalyticsExternalModule = {
 	trackFieldChanges: function(){
 		var log = function(name){
 			ExternalModules.Vanderbilt.AnalyticsExternalModule.log('field changed', {
-				name: name
+				field: name
 			})
 		}
 
