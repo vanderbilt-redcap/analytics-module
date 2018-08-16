@@ -36,11 +36,9 @@ foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
 	}
 </style>
 
-<h1>Analytics</h1>
+<h2>Analytics</h2>
 
-<p>The Analytics module automatically logs various user actions and displays them here.</p>
-
-<p>In the future, we could choose saved reports (maybe dropdown with save button next to it).</p>
+<p>The Analytics module automatically logs various user actions and displays them here, along with logs from other modules.  We will likely expand this reporting capability in the future.  Suggestions are always welcome.</p>
 
 <table id="analytics-log-entries" class="table table-striped table-bordered"></table>
 
