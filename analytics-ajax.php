@@ -47,9 +47,10 @@ while($row = db_fetch_assoc($result)){
 	$data[] = $dataRow;
 }
 
-$result = $module->queryLogs("select count(*) $whereClause");
+$columnName = 'count(1)';
+$result = $module->queryLogs("select $columnName $whereClause");
 $row = db_fetch_assoc($result);
-$totalRowCount = $row['count(*)'];
+$totalRowCount = $row[$columnName];
 
 ?>
 
