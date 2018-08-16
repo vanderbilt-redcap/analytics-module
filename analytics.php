@@ -1,5 +1,13 @@
 <?php
 namespace Vanderbilt\AnalyticsExternalModule;
+
+$columns = [];
+$i = 0;
+foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
+	$columns[] = ['data' => $i, 'title' => $label]; // TODO - switch from indices to field names?
+	$i++;
+}
+
 ?>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -15,6 +23,17 @@ namespace Vanderbilt\AnalyticsExternalModule;
 	body{
 		padding: 20px;
 	}
+
+	.log-parameter{
+		font-size: .77rem;
+	}
+
+	.log-parameter > span{
+		font-weight: bold;
+		font-size: .77rem;
+		text-transform: capitalize;
+		letter-spacing: .5px;
+	}
 </style>
 
 <h1>Analytics</h1>
@@ -23,25 +42,70 @@ namespace Vanderbilt\AnalyticsExternalModule;
 
 <p>In the future, we could choose saved reports (maybe dropdown with save button next to it).</p>
 
-<table id="analytics-log-entries" class="table table-striped table-bordered">
-	<thead>
-		<?php
-		foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
-			echo "<th data-name='$name'>$label</th>";
-		}
-		?>
-	</thead>
-</table>
+<table id="analytics-log-entries" class="table table-striped table-bordered"></table>
 
 <script>
-	$(function() {
-	    $('#analytics-log-entries').DataTable( {
+	$(function(){
+		$.fn.dataTable.ext.errMode = 'throw';
+
+		var formatParamName = function(name){
+			var parts = name.split(' ')
+
+			for(var i=0; i<parts.length; i++){
+				var part = parts[i]
+
+				if(['id', 'url'].indexOf(part) !== -1){
+					parts[i] = part.toUpperCase()
+				}
+			}
+
+			return parts.join(' ')
+		}
+
+		var columns = <?=json_encode($columns)?>;
+		columns.push({
+			data: columns.length,
+			title: 'Parameters',
+			orderable: false,
+			render: function(parameters){
+				var html = '';
+
+				for(var name in parameters){
+					var value = parameters[name]
+					name = formatParamName(name)
+					html += "<div class='log-parameter'><span>" + name + ":</span> " + value + "<br>"
+				}
+
+				return html
+			}
+		})
+
+		var table = $('#analytics-log-entries').DataTable({
 	        "processing": true,
 	        "serverSide": true,
 	        "ajax": <?=json_encode($module->getUrl('analytics-ajax.php'))?>,
 			"autoWidth": false,
 			"searching": false,
-			"order": [[ 0, "desc" ]]
-	    } );
+			"order": [[ 0, "desc" ]],
+			"columns": columns
+	    }).on( 'draw', function () {
+			var ellipsisButtons = $('.paginate_button.disabled')
+			ellipsisButtons.removeClass('disabled')
+			ellipsisButtons.find('a').click(function(e){
+				setTimeout(function(){
+					var page = prompt("What page number would like like to jump to?");
+					var pageCount = table.page.info().pages
+
+					if(isNaN(page) || page < 1 || page > pageCount){
+						alert('You must enter a page between 1 and ' + pageCount)
+					}
+					else{
+						table.page(page-1).draw('page')
+					}
+				}, 0)
+
+				return false
+			})
+	    })
 	});
 </script>
