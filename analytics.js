@@ -200,7 +200,7 @@ var AnalyticsExternalModule = {
 		}
 
 		ExternalModules.Vanderbilt.AnalyticsExternalModule.log('video ' + event, {
-			name: fieldName,
+			field: fieldName,
 			seconds: seconds
 		})
 	}
