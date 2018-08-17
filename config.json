@@ -26,5 +26,9 @@
 				"url": "analytics.php"
 			}
 		]
-	}
+	},
+
+	"compatibility": {
+        "redcap-version-min": "8.7.1"
+    }
 }
