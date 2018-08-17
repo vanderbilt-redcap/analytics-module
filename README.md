@@ -1,6 +1,6 @@
 # Analytics
 
-This module logs common user actions.  It also provides a report for analyzing those logs, as well as logs from other modules.  It is still very basic, but could easily be expanded.  The reporting functionality especially will require more work before being particularly useful to the average user.  [Pull requests](https://help.github.com/articles/about-pull-requests/) are always welcome!
+This module logs common user actions.  It also provides a report for analyzing those logs, as well as logs from other modules.  It is still very basic, but could easily be expanded.  The reporting functionality especially will require more work (perhaps using [jQuery QueryBuilder](https://querybuilder.js.org/)) before being particularly useful to the average user.  [Pull requests](https://help.github.com/articles/about-pull-requests/) are always welcome!
 
 This module **HAS NOT BEEN TESTED** with longitudinal projects or repeating instruments. 
  
