@@ -22,6 +22,10 @@ foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
 		padding: 20px;
 	}
 
+	h4{
+		margin-bottom: 20px;
+	}
+
 	.log-parameter{
 		font-size: .77rem;
 	}
@@ -38,7 +42,7 @@ foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
 	}
 </style>
 
-<h2>Analytics</h2>
+<h4><?=\REDCap::getProjectTitle()?> - Analytics</h4>
 
 <p>The Analytics module automatically logs various user actions and displays them here, along with logs from other modules.  We will likely expand this reporting capability in the future.  Suggestions are always welcome.</p>
 

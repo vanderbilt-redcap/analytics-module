@@ -8,7 +8,6 @@ class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
 		'username' => 'Username',
 		'ip' => 'IP Address',
 		'external_module_id' => 'External Module',
-		'project_id' => 'Project',
 		'record' => 'Record',
 		'message' => 'Message'
 	];
