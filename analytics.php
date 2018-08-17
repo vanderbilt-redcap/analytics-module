@@ -71,7 +71,12 @@ foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
 		columns.forEach(function(column){
 			if(column.data === 'record'){
 				column.render = function(record){
-					return '<div class="record-column-content">' + record + '</div>'
+					if(record === null){
+						return ''
+					}
+					else{
+						return '<div class="record-column-content">' + record + '</div>'
+					}
 				}
 			}
 		})
