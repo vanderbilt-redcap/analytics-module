@@ -27,7 +27,14 @@ $orderDirection = \db_real_escape_string($order['dir']);
 $offset = \db_real_escape_string($_GET['start']);
 $limit = \db_real_escape_string($_GET['length']);
 
-$result = $module->queryLogs("$sql $whereClause order by $orderColumnName $orderDirection limit $limit offset $offset");
+$queryLogs = function($sql) use ($module){
+	$sql = $module->getQueryLogsSql($sql);
+	$sql = str_replace("redcap_external_modules_log.external_module_id = (SELECT external_module_id FROM redcap_external_modules WHERE directory_prefix = 'vanderbilt_analytics') and", '', $sql);
+
+	return $module->query($sql);
+};
+
+$result = $queryLogs("$sql $whereClause order by $orderColumnName $orderDirection limit $limit offset $offset");
 
 $data = [];
 $parametersById = [];
@@ -54,7 +61,7 @@ while($row = db_fetch_assoc($result)){
 }
 
 $columnName = 'count(1)';
-$result = $module->queryLogs("select $columnName $whereClause");
+$result = $queryLogs("select $columnName $whereClause");
 $row = db_fetch_assoc($result);
 $totalRowCount = $row[$columnName];
 
