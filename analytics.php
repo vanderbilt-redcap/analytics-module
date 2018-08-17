@@ -3,7 +3,11 @@ namespace Vanderbilt\AnalyticsExternalModule;
 
 $columns = [];
 foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
-	$columns[] = ['data' => $name, 'title' => $label];
+	$columns[] = [
+		'data' => $name,
+		'title' => $label,
+		'sClass' => "cell-$name"
+	];
 }
 
 ?>
@@ -39,6 +43,10 @@ foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
 
 	.record-column-content{
 		max-width: 250px;
+	}
+
+	.cell-message{
+		text-transform: capitalize;
 	}
 </style>
 
