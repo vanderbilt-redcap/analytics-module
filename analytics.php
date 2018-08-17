@@ -32,6 +32,10 @@ foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
 		text-transform: capitalize;
 		letter-spacing: .5px;
 	}
+
+	.record-column-content{
+		max-width: 250px;
+	}
 </style>
 
 <h2>Analytics</h2>
@@ -59,6 +63,15 @@ foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
 		}
 
 		var columns = <?=json_encode($columns)?>;
+
+		columns.forEach(function(column){
+			if(column.data === 'record'){
+				column.render = function(record){
+					return '<div class="record-column-content">' + record + '</div>'
+				}
+			}
+		})
+
 		columns.push({
 			data: 'parameters',
 			title: 'Parameters',
