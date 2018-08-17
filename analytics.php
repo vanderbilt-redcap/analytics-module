@@ -2,10 +2,8 @@
 namespace Vanderbilt\AnalyticsExternalModule;
 
 $columns = [];
-$i = 0;
 foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
-	$columns[] = ['data' => $i, 'title' => $label]; // TODO - switch from indices to field names?
-	$i++;
+	$columns[] = ['data' => $name, 'title' => $label];
 }
 
 ?>
@@ -62,7 +60,7 @@ foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
 
 		var columns = <?=json_encode($columns)?>;
 		columns.push({
-			data: columns.length,
+			data: 'parameters',
 			title: 'Parameters',
 			orderable: false,
 			render: function(parameters){

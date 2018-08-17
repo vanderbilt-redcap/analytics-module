@@ -32,25 +32,16 @@ $result = $module->queryLogs("$sql $whereClause order by $orderColumnName $order
 $data = [];
 $parametersById = [];
 while($row = db_fetch_assoc($result)){
-	$dataRow = [];
-
-	foreach($columns as $name=>$label){
-		$value = $row[$name];
-
-		if($name === 'external_module_id'){
-			$value = $modulesNamesById[$value] . " ($value)";
-		}
-
-		$dataRow[] = $value;
-	}
+	$moduleId = $row['external_module_id'];
+	$row['external_module_id'] = $modulesNamesById[$moduleId] . " ($moduleId)";
 
 	$logId = $row['log_id'];
 	$parameters = [];
 	$parametersById[$logId] =& $parameters;
-	$dataRow[] =& $parameters;
+	$row['parameters'] =& $parameters;
 	unset($parameters); // required for references above to work properly
 
-	$data[] = $dataRow;
+	$data[] = $row;
 }
 
 $result = $module->query("select * from redcap_external_modules_log_parameters where log_id in (" . implode(',', array_keys($parametersById)) . ') order by log_id, name desc');
