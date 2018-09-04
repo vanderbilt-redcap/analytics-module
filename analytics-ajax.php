@@ -20,12 +20,6 @@ $sql = "select $columnNameSql";
 
 $whereClause = '';
 
-// This is a temporary solution, and can be removed once 8.7.2 is deployed at Vanderbilt.
-global $_GET_BEFORE_REDCAP_CONNECT;
-if(isset($_GET_BEFORE_REDCAP_CONNECT)){
-	$_GET = $_GET_BEFORE_REDCAP_CONNECT;
-}
-
 $order = $_GET['order'][0];
 $orderColumnName = array_keys($columns)[$order['column']];
 $orderDirection = \db_real_escape_string($order['dir']);
