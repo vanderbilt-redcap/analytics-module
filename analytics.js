@@ -194,6 +194,11 @@ var AnalyticsExternalModule = {
 		// Normalize to past tense
 		if(event === 'play'){
 			event += 'ed'
+
+			if(window.OddcastAvatarExternalModule){
+				// If the avatar module is enabled, make sure it is not speaking currently.
+				OddcastAvatarExternalModule.stopSpeech()
+			}
 		}
 		else if (event === 'pause') {
 			event += 'd'
