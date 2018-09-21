@@ -12,9 +12,10 @@ class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
 		'message' => 'Message'
 	];
 
-	function redcap_survey_page(){
+	function redcap_survey_page($project_id, $record, $instrument){
 		$this->log('survey page loaded', [
-			'page' => $_GET['__page__']
+			'page' => $_GET['__page__'],
+			'instrument' => $instrument
 		]);
 
 		$this->initializeJavascriptModuleObject();
@@ -25,7 +26,9 @@ class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
 		<?php
 	}
 
-	function redcap_survey_complete(){
-		$this->log('survey complete');
+	function redcap_survey_complete($project_id, $record, $instrument){
+		$this->log('survey complete', [
+			'instrument' => $instrument
+		]);
 	}
 }
