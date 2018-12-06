@@ -25,7 +25,7 @@ class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
 		<script src="<?=$this->getUrl('analytics.js')?>"></script>
 		<?php
 
-		if($_SERVER['HTTP_HOST'] === 'localhost' && PHP_MAJOR_VERSION !== 5 || PHP_MINOR_VERSION !== 4){
+		if($_SERVER['HTTP_HOST'] === 'localhost' && (PHP_MAJOR_VERSION !== 5 || PHP_MINOR_VERSION !== 4)){
 			?>
 			<script>
 				alert("Please test the <?=$this->getModuleName()?> module in PHP 5.4 for STRIDE, since UMass (and maybe UAB) are currently on 5.4.")
