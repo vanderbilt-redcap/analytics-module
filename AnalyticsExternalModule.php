@@ -2,7 +2,7 @@
 namespace Vanderbilt\AnalyticsExternalModule;
 
 class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
-	const COLUMNS = [
+	static $COLUMNS = [
 		'log_id' => "Log ID",
 		'timestamp' => 'Timestamp',
 		'username' => 'Username',

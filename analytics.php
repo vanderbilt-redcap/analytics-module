@@ -2,7 +2,7 @@
 namespace Vanderbilt\AnalyticsExternalModule;
 
 $columns = [];
-foreach(AnalyticsExternalModule::COLUMNS as $name=>$label){
+foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 	$columns[] = [
 		'data' => $name,
 		'title' => $label,

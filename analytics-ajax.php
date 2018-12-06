@@ -14,7 +14,7 @@ while($row = db_fetch_assoc($result)){
 	$modulesNamesById[$row['external_module_id']] = $config['name'];
 }
 
-$columns = AnalyticsExternalModule::COLUMNS;
+$columns = AnalyticsExternalModule::$COLUMNS;
 $columnNameSql = implode(',', array_keys($columns));
 $sql = "select $columnNameSql";
 
