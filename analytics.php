@@ -17,9 +17,11 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/css/dataTables.bootstrap4.min.css" integrity="sha256-F+DaKAClQut87heMIC6oThARMuWne8+WzxIDT7jXuPA=" crossorigin="anonymous" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/jquery.dataTables.min.js" integrity="sha256-t5ZQTZsbQi8NxszC10CseKjJ5QeMw5NINtOXQrESGSU=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.19/js/dataTables.bootstrap4.min.js" integrity="sha256-hJ44ymhBmRPJKIaKRf3DSX5uiFEZ9xB/qx8cNbJvIMU=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" integrity="sha384-EkHEUZ6lErauT712zSr0DZ2uuCmi3DoQj6ecNdHQXpMpFNGAQ48WjfXCE5n20W+R" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css" integrity="sha384-4zgE69bwrfaNYUZPA2TaKwT/mjqMcBEvQmjHf1qkjg3c2JSWfEGflXXz6xXBLGGN" crossorigin="anonymous">
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" integrity="sha384-rgWRqC0OFPisxlUvl332tiM/qmaNxnlY46eksSZD84t+s2vZlqGeHrncwIRX7CGp" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js" integrity="sha384-zOjU8Lmrn7aY/0op2Zr4DRXhg0el3XJ4SEMVakZ7bni+KP5F9geHOJ0cWYSvj0HN" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js" integrity="sha384-uiSTMvD1kcI19sAHJDVf68medP9HA2E2PzGis9Efmfsdb8p9+mvbQNgFhzii1MEX" crossorigin="anonymous"></script>
 
 <style>
 	body{
@@ -121,7 +123,28 @@ if(!method_exists($module, 'getQueryLogsSql')){
 			"autoWidth": false,
 			"searching": false,
 			"order": [[ 0, "desc" ]],
-			"columns": columns
+			"columns": columns,
+			// Uncomment the following line to enable the button below it.
+			//"dom": 'Bfrtip',
+			"buttons": [
+				{
+					text: 'Export as CSV',
+					action: function (e, dt, node, config) {
+						$.ajax({
+							"url": <?=json_encode($module->getUrl('csv.php'))?>,
+							"data": dt.ajax.params(),
+							"success": function(res, status, xhr) {
+								var csvData = new Blob([res], {type: 'text/csv;charset=utf-8;'});
+								var csvURL = window.URL.createObjectURL(csvData);
+								var tempLink = document.createElement('a');
+								tempLink.href = csvURL;
+								tempLink.setAttribute('download', 'data.csv');
+								tempLink.click();
+							}
+						});
+					}
+				}
+			]
 	    }).on( 'draw', function () {
 			var ellipsisButtons = $('.paginate_button.disabled')
 			ellipsisButtons.removeClass('disabled')
