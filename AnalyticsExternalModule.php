@@ -2,6 +2,10 @@
 namespace Vanderbilt\AnalyticsExternalModule;
 
 class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
+	const SECONDS_PER_MINUTE = 60;
+	const SECONDS_PER_HOUR = self::SECONDS_PER_MINUTE*60;
+	const SECONDS_PER_DAY = self::SECONDS_PER_HOUR*24;
+
 	static $COLUMNS = [
 		'log_id' => "Log ID",
 		'timestamp' => 'Timestamp',
@@ -41,11 +45,16 @@ class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
 	}
 
 	function getReportWhereClause(){
-		$whereClause = '';
+		$startDate = \db_real_escape_string($_GET['start-date']);
+		$endDate = \db_real_escape_string($_GET['end-date']);
 
-		$includeAllModules = $_GET['includeAllModules'];
-		if($includeAllModules === 'true'){
-			$whereClause .= 'where external_module_id is not null';
+		// Bump the end date to the next day so all events on the day specified are include
+		$endDate = $this->formatDate(strtotime($endDate) + self::SECONDS_PER_DAY);
+
+		$whereClause = "where timestamp >= '$startDate' and timestamp <= '$endDate'";
+
+		if($_GET['include-all-modules'] === 'true'){
+			$whereClause .= ' and external_module_id is not null';
 		}
 
 		return $whereClause;
@@ -98,5 +107,9 @@ class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
 		}
 
 		return $data;
+	}
+
+	function formatDate($time){
+		return date('Y-m-d', $time);
 	}
 }

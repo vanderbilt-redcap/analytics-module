@@ -1,7 +1,7 @@
 <?php
 
 $whereClause = $module->getReportWhereClause();
-$data = $module->getReportData('', '');
+$data = $module->getReportData($whereClause, '');
 
 $columns = $module::$COLUMNS;
 $columns['parameters'] = 'Parameters';

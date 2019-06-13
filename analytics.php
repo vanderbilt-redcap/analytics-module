@@ -24,6 +24,9 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js" integrity="sha384-EzXZHFRG/n4Omd1nQTNbrErjupvcy1TetvtLCAR9wX6U7/CnXYYe8Ea6l6n1KtM5" crossorigin="anonymous"></script>
 <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js" integrity="sha384-uiSTMvD1kcI19sAHJDVf68medP9HA2E2PzGis9Efmfsdb8p9+mvbQNgFhzii1MEX" crossorigin="anonymous"></script>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 <style>
 	body{
 		padding: 20px;
@@ -31,6 +34,17 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 
 	h4{
 		margin-bottom: 20px;
+	}
+
+	label{
+		display: inline-block;
+		min-width: 75px;
+		text-align: right;
+		margin-right: 5px;
+	}
+
+	input.flatpickr{
+		width: 90px;
 	}
 
 	input[type=checkbox]{
@@ -72,12 +86,21 @@ if(!method_exists($module, 'getQueryLogsSql')){
 	?><p style="color: red">This report is not supported in your REDCap version.</p><?php
 	die();
 }
+
 ?>
 
-<label>
-	<input type="checkbox" id="all-modules-checkbox">
-	Include logs from other modules
-</label>
+<form id="custom-controls">
+	<label>Start Date</label>
+	<input class="flatpickr" name="start-date" value="<?=$module->formatDate(time() - $module::SECONDS_PER_DAY*30)?>">
+	<br>
+	<label>&nbsp;End Date</label>
+	<input class="flatpickr" name="end-date" value="<?=$module->formatDate(time())?>">
+	<br>
+	<label style="margin: 25px">
+		<input type="checkbox" name="include-all-modules">
+		Include logs from other modules
+	</label>
+</form>
 
 <table id="analytics-log-entries" class="table table-striped table-bordered"></table>
 
@@ -131,7 +154,7 @@ if(!method_exists($module, 'getQueryLogsSql')){
 			}
 		})
 
-		var includeAllModulesCheckbox = $('#all-modules-checkbox');
+		var customControls = $('form#custom-controls input')
 
 		var table = $('#analytics-log-entries').DataTable({
 	        "processing": true,
@@ -139,7 +162,17 @@ if(!method_exists($module, 'getQueryLogsSql')){
 	        "ajax": {
 				url: <?=json_encode($module->getUrl('analytics-ajax.php'))?>,
 				data: function(data){
-					data.includeAllModules = includeAllModulesCheckbox.is(':checked')
+					customControls.each(function(i, input){
+						var value
+						if(input.type === 'checkbox'){
+							value = $(input).is(':checked')
+						}
+						else{
+							value = input.value
+						}
+
+						data[input.name] = value
+					})
 				}
 			},
 			"autoWidth": false,
@@ -186,9 +219,11 @@ if(!method_exists($module, 'getQueryLogsSql')){
 				return false
 			})
 	    })
-	    
-		includeAllModulesCheckbox.change(function(){
+
+		customControls.change(function(){
 			table.draw()
 		})
+
+		flatpickr('input.flatpickr')
 	});
 </script>
