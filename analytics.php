@@ -142,7 +142,7 @@ if(!method_exists($module, 'getQueryLogsSql')){
 			"order": [[ 0, "desc" ]],
 			"columns": columns,
 			// Uncomment the following line to enable the button below it.
-			//"dom": 'Bfrtip',
+			"dom": 'Blfrtip',
 			"buttons": [
 				{
 					text: 'Export as CSV',
