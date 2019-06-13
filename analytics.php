@@ -33,6 +33,15 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 		margin-bottom: 20px;
 	}
 
+	input[type=checkbox]{
+		vertical-align: -1px;
+	}
+
+	.dataTables_length label{
+		margin-top: 3px;
+		margin-left: 10px;
+	}
+
 	.log-parameter{
 		font-size: .77rem;
 	}
@@ -50,10 +59,6 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 
 	.cell-message{
 		text-transform: capitalize;
-	}
-
-	input[type=checkbox]{
-		vertical-align: -1px;
 	}
 </style>
 
