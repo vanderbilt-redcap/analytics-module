@@ -21,6 +21,7 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css" integrity="sha384-4zgE69bwrfaNYUZPA2TaKwT/mjqMcBEvQmjHf1qkjg3c2JSWfEGflXXz6xXBLGGN" crossorigin="anonymous">
 <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" integrity="sha384-rgWRqC0OFPisxlUvl332tiM/qmaNxnlY46eksSZD84t+s2vZlqGeHrncwIRX7CGp" crossorigin="anonymous"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js" integrity="sha384-zOjU8Lmrn7aY/0op2Zr4DRXhg0el3XJ4SEMVakZ7bni+KP5F9geHOJ0cWYSvj0HN" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js" integrity="sha384-EzXZHFRG/n4Omd1nQTNbrErjupvcy1TetvtLCAR9wX6U7/CnXYYe8Ea6l6n1KtM5" crossorigin="anonymous"></script>
 <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js" integrity="sha384-uiSTMvD1kcI19sAHJDVf68medP9HA2E2PzGis9Efmfsdb8p9+mvbQNgFhzii1MEX" crossorigin="anonymous"></script>
 
 <style>
@@ -50,6 +51,10 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 	.cell-message{
 		text-transform: capitalize;
 	}
+
+	input[type=checkbox]{
+		vertical-align: -1px;
+	}
 </style>
 
 <h4><?=\REDCap::getProjectTitle()?> - Analytics</h4>
@@ -63,6 +68,11 @@ if(!method_exists($module, 'getQueryLogsSql')){
 	die();
 }
 ?>
+
+<label>
+	<input type="checkbox" id="all-modules-checkbox">
+	Include logs from other modules
+</label>
 
 <table id="analytics-log-entries" class="table table-striped table-bordered"></table>
 
@@ -116,10 +126,17 @@ if(!method_exists($module, 'getQueryLogsSql')){
 			}
 		})
 
+		var includeAllModulesCheckbox = $('#all-modules-checkbox');
+
 		var table = $('#analytics-log-entries').DataTable({
 	        "processing": true,
 	        "serverSide": true,
-	        "ajax": <?=json_encode($module->getUrl('analytics-ajax.php'))?>,
+	        "ajax": {
+				url: <?=json_encode($module->getUrl('analytics-ajax.php'))?>,
+				data: function(data){
+					data.includeAllModules = includeAllModulesCheckbox.is(':checked')
+				}
+			},
 			"autoWidth": false,
 			"searching": false,
 			"order": [[ 0, "desc" ]],
@@ -164,5 +181,9 @@ if(!method_exists($module, 'getQueryLogsSql')){
 				return false
 			})
 	    })
+	    
+		includeAllModulesCheckbox.change(function(){
+			table.draw()
+		})
 	});
 </script>
