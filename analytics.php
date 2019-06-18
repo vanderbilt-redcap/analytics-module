@@ -1,6 +1,8 @@
 <?php
 namespace Vanderbilt\AnalyticsExternalModule;
 
+use REDCap;
+
 $columns = [];
 foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 	$columns[] = [
@@ -204,8 +206,9 @@ if(!method_exists($module, 'getQueryLogsSql')){
 								var csvData = new Blob([res], {type: 'text/csv;charset=utf-8;'});
 								var csvURL = window.URL.createObjectURL(csvData);
 								var tempLink = document.createElement('a');
+								var filename = <?=json_encode(REDCap::getProjectTitle())?> + " - Analytics - " + $('input[name=start-date]').val() + " to " + $('input[name=end-date]').val() + '.csv'
 								tempLink.href = csvURL;
-								tempLink.setAttribute('download', 'data.csv');
+								tempLink.setAttribute('download', filename);
 								tempLink.click();
 							}
 						});
