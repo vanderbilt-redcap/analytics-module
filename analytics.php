@@ -47,6 +47,14 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 		width: 90px;
 	}
 
+	.flatpickr-current-month{
+		padding-top: 4px;
+	}
+
+	.flatpickr-current-month .flatpickr-monthDropdown-months{
+		height: 27px;
+	}
+
 	input[type=checkbox]{
 		vertical-align: -1px;
 	}
