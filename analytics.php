@@ -27,6 +27,8 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js" integrity="sha384-L2MNADX6uJTVkbDNELTUeRjzdfJToVbpmubYJ2C74pwn8FHtJeXa+3RYkDRX43zQ" crossorigin="anonymous"></script>
+
 <style>
 	body{
 		padding: 20px;
@@ -165,6 +167,7 @@ if(!method_exists($module, 'getQueryLogsSql')){
 
 		var customControls = $('form#custom-controls input')
 
+		var lastOverlayDisplayTime = 0
 		var table = $('#analytics-log-entries').DataTable({
 	        "processing": true,
 	        "serverSide": true,
@@ -189,7 +192,7 @@ if(!method_exists($module, 'getQueryLogsSql')){
 			"order": [[ 0, "desc" ]],
 			"columns": columns,
 			// Uncomment the following line to enable the button below it.
-			"dom": 'Blfrtip',
+			"dom": 'Blftip',
 			"buttons": [
 				{
 					text: 'Export as CSV',
@@ -227,6 +230,18 @@ if(!method_exists($module, 'getQueryLogsSql')){
 
 				return false
 			})
+	    }).on( 'processing.dt', function(e, settings, processing){
+	    	if(processing){
+				$.LoadingOverlay('show')
+				lastOverlayDisplayTime = Date.now()
+	    	}
+	    	else{
+	    		var secondsSinceDisplay = Date.now() - lastOverlayDisplayTime
+	    		var delay = Math.max(300, secondsSinceDisplay)
+	    		setTimeout(function(){
+					$.LoadingOverlay('hide')
+	    		}, delay)
+	    	}
 	    })
 
 		customControls.change(function(){
@@ -234,5 +249,9 @@ if(!method_exists($module, 'getQueryLogsSql')){
 		})
 
 		flatpickr('input.flatpickr')
+
+		$.LoadingOverlaySetup({
+			'background': 'rgba(30,30,30,0.7)'
+		})
 	});
 </script>
