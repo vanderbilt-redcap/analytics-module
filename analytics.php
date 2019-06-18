@@ -44,7 +44,8 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 	}
 
 	input.flatpickr{
-		width: 90px;
+		width: 97px;
+		padding: 0px 5px;
 	}
 
 	.flatpickr-current-month{
@@ -98,10 +99,10 @@ if(!method_exists($module, 'getQueryLogsSql')){
 ?>
 
 <form id="custom-controls">
-	<label>Start Date</label>
+	<label>Start Date:</label>
 	<input class="flatpickr" name="start-date" value="<?=$module->formatDate(time() - $module::SECONDS_PER_DAY*30)?>">
 	<br>
-	<label>&nbsp;End Date</label>
+	<label>End Date:</label>
 	<input class="flatpickr" name="end-date" value="<?=$module->formatDate(time())?>">
 	<br>
 	<label style="margin: 25px">
