@@ -97,13 +97,15 @@ class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
 			$data[] = $row;
 		}
 
-		$result = $this->query("select * from redcap_external_modules_log_parameters where log_id in (" . implode(',', array_keys($parametersById)) . ') order by log_id, name desc');
-		while($row = db_fetch_assoc($result)){
-			$logId = $row['log_id'];
-			$name = $row['name'];
-			$value = $row['value'];
+		if(!empty($data)){
+			$result = $this->query("select * from redcap_external_modules_log_parameters where log_id in (" . implode(',', array_keys($parametersById)) . ') order by log_id, name desc');
+			while($row = db_fetch_assoc($result)){
+				$logId = $row['log_id'];
+				$name = $row['name'];
+				$value = $row['value'];
 
-			$parametersById[$logId][$name] = $value;
+				$parametersById[$logId][$name] = $value;
+			}
 		}
 
 		return $data;
