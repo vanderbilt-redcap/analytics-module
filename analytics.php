@@ -193,7 +193,6 @@ if(!method_exists($module, 'getQueryLogsSql')){
 			"searching": false,
 			"order": [[ 0, "desc" ]],
 			"columns": columns,
-			// Uncomment the following line to enable the button below it.
 			"dom": 'Blftip',
 			"buttons": [
 				{
