@@ -2,7 +2,7 @@ var AnalyticsExternalModule = {
 	youTubeSelector: 'iframe[src*="youtube.com"]',
 	vimeoSelector: 'iframe[src*="vimeo.com"]',
 	elementsToInitializeLater: [],
-	elementsInitialized: [],
+	elementsInitialized: {},
 	init: function(){
 		AnalyticsExternalModule.trackVideos()
 		AnalyticsExternalModule.trackFieldChanges()
@@ -18,6 +18,18 @@ var AnalyticsExternalModule = {
 		// Handle videos configured to display inside a popup
 		new MutationObserver(function(mutations) {
 			mutations.forEach(function(mutation) {
+				if(mutation.removedNodes.length > 0){
+					for(var fieldName in AnalyticsExternalModule.elementsInitialized){
+						var element = AnalyticsExternalModule.elementsInitialized[fieldName]
+						if(!element.parentElement || !element.parentElement.parentElement || !element.parentElement.parentElement.parentElement){
+							// This video must have been inside a popup that was since closed.
+							// Log the close event so we can determine when the user stopped watching the video.
+							AnalyticsExternalModule.logVideoEvent(fieldName, 'popup closed')
+							delete AnalyticsExternalModule.elementsInitialized[fieldName]
+						}
+					}
+				}
+
 				var nodes = mutation.addedNodes
 				if (!nodes) {
 					return
@@ -77,25 +89,28 @@ var AnalyticsExternalModule = {
 		})
 	},
 	handleVideoElement: function(element){
-		if(this.elementsInitialized.indexOf(element) !== -1){
-			// We've already initialized this element.
-			return
+		for(var fieldName in this.elementsInitialized){
+			if(element === this.elementsInitialized[fieldName]){
+				// We've already initialized this element.
+				return
+			}
 		}
 
 		element = $(element)
 
+		var result
 		if(element.is(this.youTubeSelector)){
-			element = this.handleYouTubeElement(element)
+			result = this.handleYouTubeElement(element)
 		}
 		else if(element.is(this.vimeoSelector)){
-			element = this.handleVimeoElement(element)
+			result = this.handleVimeoElement(element)
 		}
 		else{
 			simpleDialog("The Analytics module couldn't track one of the videos on this page because it is not hosted on YouTube or Vimeo.")
 		}
 
-		if(element) {
-			this.elementsInitialized.push(element)
+		if(result) {
+			this.elementsInitialized[result.fieldName] = result.element
 		}
 	},
 	handleYouTubeElement: function(element){
@@ -144,7 +159,10 @@ var AnalyticsExternalModule = {
 			}
 		})
 
-		return player.a
+		return {
+			fieldName: fieldName,
+			element: player.a
+		}
 	},
 	handleVimeoElement: function(element){
 		element = element[0]
@@ -161,7 +179,10 @@ var AnalyticsExternalModule = {
 			})
 		})
 
-		return element
+		return {
+			fieldName: fieldName,
+			element: element
+		}
 	},
 	getFieldNameForElement: function(element){
 		element = $(element)
@@ -189,7 +210,9 @@ var AnalyticsExternalModule = {
 		return name
 	},
 	logVideoEvent: function(fieldName, event, seconds){
-		seconds = seconds.toFixed(2)
+		if(seconds){
+			seconds = seconds.toFixed(2)
+		}
 
 		// Normalize to past tense
 		if(event === 'play'){
