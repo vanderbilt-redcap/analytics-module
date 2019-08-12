@@ -24,4 +24,4 @@ The following events are logged for videos attached to **Descriptive Text** fiel
 	
 For each video event, the following parameters are stored:
 - **field** - The name of the **Descriptive Text** field to which the video is attached
-- **seconds** - The play position of the video in seconds
+- **seconds** - The play position of the video in seconds.  **This field is not currently stored for 'video popup closed'.**
