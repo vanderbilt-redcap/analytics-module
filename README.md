@@ -20,6 +20,7 @@ The following events are logged for videos attached to **Descriptive Text** fiel
 - **video paused**
 - **video seeked**
 - **video ended**
+- **video popup closed**
 	
 For each video event, the following parameters are stored:
 - **field** - The name of the **Descriptive Text** field to which the video is attached
