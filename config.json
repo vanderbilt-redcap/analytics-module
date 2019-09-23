@@ -30,5 +30,13 @@
 
 	"compatibility": {
         "redcap-version-min": "8.7.1"
-    }
+	},
+	
+	"project-settings": [
+		{
+			"key": "disable-logging",
+			"name": "Disable event logging on this project",
+			"type": "checkbox"
+		}
+	]
 }

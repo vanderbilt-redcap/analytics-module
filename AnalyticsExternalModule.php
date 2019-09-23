@@ -17,6 +17,10 @@ class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
 	];
 
 	function redcap_survey_page($project_id, $record, $instrument){
+		if($this->isLoggingDisabled()){
+			return;
+		}
+
 		$this->log('survey page loaded', [
 			'page' => $_GET['__page__'],
 			'instrument' => $instrument
@@ -32,16 +36,24 @@ class AnalyticsExternalModule extends \ExternalModules\AbstractExternalModule{
 		if($_SERVER['HTTP_HOST'] === 'localhost' && (PHP_MAJOR_VERSION !== 5 || PHP_MINOR_VERSION !== 4)){
 			?>
 			<script>
-				alert("Please test the <?=$this->getModuleName()?> module in PHP 5.4 for STRIDE, since UMass (and maybe UAB) are currently on 5.4.")
+				//alert("Please test the <?=$this->getModuleName()?> module in PHP 5.4 for STRIDE, since UMass (and maybe UAB) are currently on 5.4.")
 			</script>
 			<?php
 		}
 	}
 
 	function redcap_survey_complete($project_id, $record, $instrument){
+		if($this->isLoggingDisabled()){
+			return;
+		}
+
 		$this->log('survey complete', [
 			'instrument' => $instrument
 		]);
+	}
+
+	private function isLoggingDisabled(){
+		return $this->getProjectSetting('disable-logging');
 	}
 
 	function getReportWhereClause(){
