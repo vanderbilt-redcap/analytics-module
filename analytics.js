@@ -1,13 +1,23 @@
 var AnalyticsExternalModule = {
 	youTubeSelector: 'iframe[src*="youtube.com"]',
 	vimeoSelector: 'iframe[src*="vimeo.com"]',
-	elementsToInitializeLater: [],
 	elementsInitialized: {},
 	init: function(){
 		AnalyticsExternalModule.trackVideos()
 		AnalyticsExternalModule.trackFieldChanges()
 	},
 	trackVideos: function(){
+		// YT may always be loaded by this point these days. We'll leave the following block in place just in case.
+		if(typeof YT == 'undefined' || !YT.loaded){
+			// The YouTube framework hasn't loaded yet. Delay initialization.
+
+			setTimeout(function(){
+				AnalyticsExternalModule.trackVideos()
+			}, 50)
+
+			return
+		}
+
 		var selector = AnalyticsExternalModule.youTubeSelector + ', ' + AnalyticsExternalModule.vimeoSelector
 
 		// Handle videos configured to display inline
@@ -114,16 +124,6 @@ var AnalyticsExternalModule = {
 		}
 	},
 	handleYouTubeElement: function(element){
-		if(typeof YT == 'undefined' || !YT.loaded){
-			// The YouTube framework hasn't loaded yet. Delay initialization.
-			this.elementsToInitializeLater.push(element[0])
-
-			// Hide the element to prevent the user from playing it until we are able to track it.
-			element.css('visibility', 'hidden')
-
-			return null
-		}
-
 		var height = element.attr('height')
 		var width = element.attr('width')
 		var src = element.attr('src').split('/').pop().split('?')[0]
@@ -237,10 +237,3 @@ var AnalyticsExternalModule = {
 $(function(){
 	AnalyticsExternalModule.init();
 })
-
-// This is called by the YouTube Iframe framework
-function onYouTubeIframeAPIReady(){
-	AnalyticsExternalModule.elementsToInitializeLater.forEach(function(element){
-		AnalyticsExternalModule.handleVideoElement(element)
-	})
-}
