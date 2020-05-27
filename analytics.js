@@ -122,11 +122,15 @@ var AnalyticsExternalModule = {
 		if(result) {
 			this.elementsInitialized[result.fieldName] = result.element
 		}
+		else{
+			simpleDialog("An error occurred while tracking video events.  Please report this error to an administrator.")
+		}
 	},
 	handleYouTubeElement: function(element){
 		var height = element.attr('height')
 		var width = element.attr('width')
 		var src = element.attr('src').split('/').pop().split('?')[0]
+		var parent = element.parent()
 
 		var fieldName = AnalyticsExternalModule.getFieldNameForElement(element)
 		var newElement = $('<div></div>')
@@ -161,7 +165,7 @@ var AnalyticsExternalModule = {
 
 		return {
 			fieldName: fieldName,
-			element: player.a
+			element: parent.find('iframe')[0] // Get the new iframe created by the YouTube library
 		}
 	},
 	handleVimeoElement: function(element){
