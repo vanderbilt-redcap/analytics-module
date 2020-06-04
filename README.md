@@ -19,6 +19,7 @@ The following events are logged for videos attached to **Descriptive Text** fiel
 - **video played**
 - **video paused**
 - **video seeked**
+  - Only for Vimeo.  YouTube reports seek events as two separate pause and play events.
 - **video ended**
 - **video popup closed**
 	
