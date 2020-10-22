@@ -93,15 +93,6 @@ foreach(AnalyticsExternalModule::$COLUMNS as $name=>$label){
 
 <p>The Analytics module automatically logs various user actions and displays them here, along with logs from other modules.  We will likely expand this reporting capability in the future.  Suggestions are always welcome.</p>
 
-<?php
-// This method will probably make it into 8.7.2
-if(!method_exists($module, 'getQueryLogsSql')){
-	?><p style="color: red">This report is not supported in your REDCap version.</p><?php
-	die();
-}
-
-?>
-
 <form id="custom-controls">
 	<label>Start Date:</label>
 	<input class="flatpickr" name="start-date" value="<?=$module->formatDate(time() - $module::SECONDS_PER_DAY*30)?>">
