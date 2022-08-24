@@ -4,6 +4,10 @@
 	"namespace": "Vanderbilt\\AnalyticsExternalModule",
 
 	"description": "Tracks common user actions and provides reports to analyze them.",
+	
+	"enable-ajax-logging": true,
+
+	"enable-no-auth-logging": true,
 
 	"authors": [
 		{
